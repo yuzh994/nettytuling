@@ -14,7 +14,7 @@ import java.util.Set;
  * @date 2021/11/30 13:56
  */
 public class MyNioSelectorServer {
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         //创建NIO ServerSocketChannel
         ServerSocketChannel socketChannel = ServerSocketChannel.open();
         socketChannel.socket().bind(new InetSocketAddress(9001));
@@ -28,7 +28,7 @@ public class MyNioSelectorServer {
         socketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
         System.out.println("服务启动成功");
-        while (true){
+        while (true) {
             //阻塞等待需要处理的事件发生
             selector.select();
 
@@ -36,22 +36,22 @@ public class MyNioSelectorServer {
 
             Iterator<SelectionKey> iterator = selectionKeys.iterator();
 
-            while (iterator.hasNext()){
+            while (iterator.hasNext()) {
                 SelectionKey key = iterator.next();
-                if (key.isAcceptable()){
-                    ServerSocketChannel server = (ServerSocketChannel)key.channel();
+                if (key.isAcceptable()) {
+                    ServerSocketChannel server = (ServerSocketChannel) key.channel();
                     SocketChannel accept = server.accept();
                     accept.configureBlocking(false);
 
-                    accept.register(selector,SelectionKey.OP_ACCEPT);
+                    accept.register(selector, SelectionKey.OP_ACCEPT);
                     System.out.println("客户端连接成功");
-                }else if (key.isReadable()){
+                } else if (key.isReadable()) {
                     SocketChannel socketChannel1 = (SocketChannel) key.channel();
                     ByteBuffer byteBuffer = ByteBuffer.allocateDirect(128);
                     int len = socketChannel1.read(byteBuffer);
-                    if (len > 0){
-                        System.out.println("接收到消息"+new String(byteBuffer.array()));
-                    }else if (len == -1){
+                    if (len > 0) {
+                        System.out.println("接收到消息" + new String(byteBuffer.array()));
+                    } else if (len == -1) {
                         System.out.println("客户端端口连接");
                         socketChannel.close();
                     }
